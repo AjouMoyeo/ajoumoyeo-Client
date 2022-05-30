@@ -13,7 +13,7 @@
             </div>
             <div class="content_email" v-if="!this.isCard">
             <div class="beforeSend" v-if="!this.isSend">
-                <input type="text" class="inputfile" placeholder="이메일을 입력해주세요." />
+                <input type="text" class="inputfile" v-model="this.email" placeholder="이메일을 입력해주세요." />
                 <div @click="this.send" class="button">인증번호받기</div>
             </div>
             <div class="AfterSend" v-if="this.isSend">
@@ -68,6 +68,7 @@ export default {
           image:"",
           name:"",
           sid:"",
+          email:"",
           class:"",
           phone:"",
           pw:"",
@@ -83,12 +84,13 @@ export default {
       },
       login(){
           let data = {
+              "student_id" : this.sid,
               "name" : this.name,
-              "sid" : this.sid,
-              "class" : this.class,
-              "phone" : this.phone,
-              "pw" : this.pw,
-              "nickname" : this.nickname
+              "nickname" : this.nickname,
+              "email" : this.email,
+              "phone_num" : this.phone,
+              "department" : this.class,
+              "password" : this.pw
           }
           axios.post("http://localhost:1234", data);
           this.$store.state.showLogin =false;
