@@ -1,7 +1,7 @@
 <template>
   <div class="write">
       <div class="title">
-          <input type="text" placeholder="제목입력"/>
+          <input type="text" v-model = "this.title" placeholder="제목입력"/>
           <div class="button" @click="this.$store.state.CurrentPage = 'Board'">X</div>
       </div>
       <div class="option">
@@ -18,7 +18,7 @@
             </div>
             <div class="box">
                 <div class="name">목표인원수</div>
-                <input class="num" type="text"/>
+                <input class="num" type="text" v-model="goal_num"/>
             </div>
             <div class="box">
                 <div class="name">번호공개</div>
@@ -33,13 +33,14 @@
       <div class="text">
           <div class="title">내용</div>
           <textarea></textarea>
-          <div class="button">게시글 작성</div>
+          <div class="button" @click="this.write()">게시글 작성</div>
       </div>
   </div>
 </template>
 
 <script>
 
+import axios from 'axios'
 
 export default {
   name: 'Write',
@@ -49,7 +50,10 @@ export default {
           category: String,
           showPhone: Boolean,
           anonymous: Boolean,
-          preview:require("../assets/logo.png")
+          preview:require("../assets/logo.png"),
+          title:"",
+          image:""
+
           }
   },
   created(){
@@ -60,15 +64,33 @@ export default {
   },
   methods: {
       upload(e){
-          let file = e.target.files[0];
-          console.log(file)
-          if(file){
-                let reader = new FileReader();
-                reader.onload = (e) => {
-                    this.preview = e.target.result
+          let files = e.target.files[0];
+          this.image = files
+          console.log(files)
+          let formdata = new FormData();
+          formdata.append('files', files)
+          axios({
+              method: 'post',
+              url: 'http://localhost:3000/post/add/multi', 
+              data : formdata,
+              headers: {
+                "Content-Type" : "multipart/form-data",
                 }
-                reader.readAsDataURL(file)
+            });
+      },
+      write(){
+          let data = {
+              "student_id" : 201820806,
+              "category" : "exercise",
+              "text" : "asdf",
+              "is_anony" : 0,
+              "is_number" : 0,
+              "goal_num" : 10,
+              "photo" : this.image
           }
+          axios.post("http://localhost:3000/post/add", data).then( e =>{
+              
+          });
       }
   }
 }
