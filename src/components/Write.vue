@@ -64,33 +64,37 @@ export default {
   },
   methods: {
       upload(e){
-          let files = e.target.files[0];
+          let files = e.target.files;
           this.image = files
-          console.log(files)
-          let formdata = new FormData();
-          formdata.append('files', files)
-          axios({
-              method: 'post',
-              url: 'http://localhost:3000/post/add/multi', 
-              data : formdata,
-              headers: {
-                "Content-Type" : "multipart/form-data",
-                }
-            });
+            if(files[0]){
+                let reader = new FileReader();
+                reader.onload = (e) => {
+                    this.preview = e.target.result;
+                }             
+                reader.readAsDataURL(this.image[0]);
+            }
       },
       write(){
+          let formdata = new FormData();
           let data = {
               "student_id" : 201820806,
               "category" : "exercise",
               "text" : "asdf",
               "is_anony" : 0,
               "is_number" : 0,
-              "goal_num" : 10,
-              "photo" : this.image
+              "goal_num" : 10
           }
-          axios.post("http://localhost:3000/post/add", data).then( e =>{
-              
-          });
+          formdata.append('files', this.image[0])
+          formdata.append('data', JSON.stringify(data));
+          axios({
+              method: 'POST',
+              url: 'http://localhost:3000/post/add/multi',
+              mode: 'cors',
+              headers: {
+                "Content-Type" : "multipart/form-data",
+                },
+              data : formdata
+            });
       }
   }
 }
