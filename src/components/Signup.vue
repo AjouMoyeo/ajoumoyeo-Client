@@ -43,10 +43,10 @@
         </div>
         <div class="box pw">
             <div class="name">비밀번호</div>
-            <input type="text" v-model="this.pw">
+            <input type="password" v-model="this.pw">
         </div>
         <div class="box pwRe">
-            <div class="name">비밀번호 확인</div>
+            <div class="password">비밀번호 확인</div>
             <input type="text">
         </div>
         <div class="box nickname last">
@@ -92,7 +92,7 @@ export default {
               "department" : this.class,
               "password" : this.pw
           }
-          axios.post("http://localhost:1234", data);
+          axios.post("http://localhost:3000/auth/register", data);
           this.$store.state.showLogin =false;
       },
       send(){

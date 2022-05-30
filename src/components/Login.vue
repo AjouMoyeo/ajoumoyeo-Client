@@ -3,11 +3,11 @@
         <div class="title">아주모여</div>
         <div class="box sid">
             <div class="name">학번</div>
-            <input type="text" v-model="this.sid">
+            <input type="text" v-model = "this.sid">
         </div>
         <div class="box pw">
             <div class="name">비밀번호</div>
-            <input type="password" v-model="this.pw">
+            <input type="password" v-model = "this.pw">
         </div>
         <div class="signupButton">
              <span class="button" @click="clickSignup()">회원가입</span>
@@ -39,7 +39,9 @@ export default {
               "student_id" : this.sid,
               "password" : this.pw
           }
-          axios.post("http://localhost:1234", data);
+          axios.post("http://localhost:3000/auth/login", data).then( e =>{
+              
+          });
           this.$store.state.showLogin =false;
       }
   }
