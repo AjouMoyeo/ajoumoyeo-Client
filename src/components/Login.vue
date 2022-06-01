@@ -40,9 +40,10 @@ export default {
               "password" : this.pw
           }
           axios.post("http://localhost:3000/auth/login", data).then( e =>{
-              
+              console.log(e);
+              this.$store.state.token = e.data.token
+            this.$store.state.showLogin =false;
           });
-          this.$store.state.showLogin =false;
       }
   }
 }

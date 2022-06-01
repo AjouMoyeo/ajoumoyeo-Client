@@ -7,7 +7,7 @@
       <div class="option">
           <div class="image">
             <img :src="this.preview">
-            <input @change="upload" multiple accept="image/*" type="file" id="file" class="inputfile" />
+            <input @change="upload" id="photo" name="photo" multiple type="file" class="inputfile" />
           </div>
           <div class="options">
             <div class="box">
@@ -65,17 +65,17 @@ export default {
   methods: {
       upload(e){
           let files = e.target.files;
-          this.image = files
             if(files[0]){
                 let reader = new FileReader();
                 reader.onload = (e) => {
                     this.preview = e.target.result;
                 }             
-                reader.readAsDataURL(this.image[0]);
+                reader.readAsDataURL(files[0]);
             }
       },
       write(){
           let formdata = new FormData();
+          console.log(this.$store.state.token)
           let data = {
               "student_id" : 201820806,
               "category" : "exercise",
@@ -84,7 +84,8 @@ export default {
               "is_number" : 0,
               "goal_num" : 10
           }
-          formdata.append('files', this.image[0])
+          let imagefile = document.querySelector('#photo');
+          formdata.append('photo', imagefile.files[0])
           formdata.append('data', JSON.stringify(data));
           axios({
               method: 'POST',
@@ -92,6 +93,7 @@ export default {
               mode: 'cors',
               headers: {
                 "Content-Type" : "multipart/form-data",
+                "authorization" : this.$store.state.token
                 },
               data : formdata
             });

@@ -2,6 +2,7 @@ import { createStore } from 'vuex'
 
 export default createStore({
   state: {
+    token : "",
     boardCardArr : [
     {host:"asdf", category:"운동", showPhone:false, anonymous:true, title : "축구할 사람 선착 10명", currentNum : 3, maxNum : 10, thumbnail : "logo.png", idx : 0, text:"내용"},
     {host:"asdf", category:"운동", showPhone:false, anonymous:true, title : "축구할 사람 선착 9명", currentNum : 3, maxNum : 9, thumbnail : "logo.png", idx : 1, text:"내용"},

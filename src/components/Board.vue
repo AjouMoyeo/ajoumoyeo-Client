@@ -94,6 +94,8 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   name: 'Board',
   data() {
@@ -112,6 +114,7 @@ export default {
       }
   },
   created(){
+      this.LoadBoard();
       this.index = 0;
       this.indexArr = [];
       this.searchWord = "";
@@ -120,6 +123,11 @@ export default {
       this.initBoard();
   },
   methods: {
+      LoadBoard(){
+          axios.get("http://localhost:3000/post").then((e)=>{
+              console.log(e)
+          })
+      },
       initBoard(){
         let i, j;
 

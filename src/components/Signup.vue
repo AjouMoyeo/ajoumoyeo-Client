@@ -8,13 +8,13 @@
                 <div class="button" @click="this.isCard=false" :class="{'select' : !this.isCard}">이메일 인증</div>
             </div>
             <div class="content_card" v-if="this.isCard">
-                <input @change="this.upload" accept="image/*" type="file" id="file" class="inputfile" />
+                <input @change="this.upload" accept="image/*" type="file" name="file" id="file" class="inputfile" />
                 <div @click="this.send" class="button">사진전송</div>
             </div>
             <div class="content_email" v-if="!this.isCard">
             <div class="beforeSend" v-if="!this.isSend">
                 <input type="text" class="inputfile" v-model="this.email" placeholder="이메일을 입력해주세요." />
-                <div @click="this.send" class="button">인증번호받기</div>
+                <div @click="this.emailSend" class="button">인증번호받기</div>
             </div>
             <div class="AfterSend" v-if="this.isSend">
                 <input type="text" class="inputfile" placeholder="인증번호 6자리를 입력해주세요." />
@@ -92,18 +92,25 @@ export default {
               "department" : this.class,
               "password" : this.pw
           }
-          axios.post("http://localhost:3000/auth/register", data);
+          axios.post("http://localhost:3000/auth/register", data, {"Authrozation" : this.$store.state.token});
           this.$store.state.showLogin =false;
       },
       send(){
           this.isSend = true;
           let formdata = new FormData();
           formdata.append("image", this.image)
-          axios.post("http://localhost:1234", formdata);
+          axios.post("http://localhost:1234", formdata, {headers:{"Content-Type" : "multipart/form-data",
+                "Authrozation" : this.$store.state.token} });
       },
       upload(e){
           let file = e.target.files[0];
           this.image = file;
+      },
+      emailSend(){
+          this.email
+          axios.post("http://localhost:3000/auth/email", {'email':this.email}).then((e)=>{
+              console.log(e)
+          })
       }
   }
 }
