@@ -163,6 +163,7 @@ export default {
           axios({
               method: 'POST',
               url: 'http://localhost:7000/card',
+              mode: 'cors',
               data : formdata,
               headers: {"Content-Type" : "multipart/form-data"} 
             }).then((e)=>{
