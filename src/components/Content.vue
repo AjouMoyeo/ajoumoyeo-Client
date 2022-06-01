@@ -49,6 +49,7 @@
 
 <script>
 
+import axios from 'axios'
 
 export default {
   name: 'Crite',
@@ -64,25 +65,79 @@ export default {
   },
   created(){
       this.imgsrc = ""
+      this.getContentInfo()
 
       this.showPhone = false;
       this.anonymous = false;
-      if(this.$store.state.boardCardArr[this.$store.state.CurrentIdx].nickname == this.$store.state.nickname){
-          console.log("i'm host")
-          this.isHost = true;
-      }
-      else{
-          this.isHost = false;
-      }
-      this.isJoin = false;
   },
   methods: {
       clickJoin(){
-          this.isJoin = !this.isJoin;
+          // 1/1일경우 고려
+          if(!this.isJoin){
+              if(this.$store.state.boardCardArr[this.$store.state.CurrentIdx].cur_num >= this.$store.state.boardCardArr[this.$store.state.CurrentIdx].goal_num){
+
+                      this.$store.state.alarmMessage = "인원이 가득 찼습니다.";
+              }
+              else{
+                axios({
+                    method: 'GET',
+                    url: "http://localhost:3000/post/join/"+(this.$store.state.CurrentIdx+1),
+                    headers: {
+                      "authorization" : this.$store.state.token
+                      }
+                  }).then((e)=>{
+                      this.$store.state.alarmMessage = e.data.text;
+                      if(e.data.status == "success"){
+                          this.isJoin = !this.isJoin;
+                          this.$store.state.boardCardArr[this.$store.state.CurrentIdx].cur_num++;
+                      }
+                  });
+                  
+              }
+
+          }
+          else{
+              if(this.isJoin && !this.isHost){
+            axios({
+                method: 'GET',
+                url: "http://localhost:3000/post/leave/"+(this.$store.state.CurrentIdx+1),
+                headers: {
+                  "authorization" : this.$store.state.token
+                  }
+              }).then((e)=>{
+                  this.$store.state.alarmMessage = e.data.text;
+                  console.log(e)
+                  if(e.data.status == "success"){
+                      this.isJoin = !this.isJoin;
+                      this.$store.state.boardCardArr[this.$store.state.CurrentIdx].cur_num--;
+                  }
+              });
+
+              }
+          }
       },
       HangulCategory(string){
         if(string == 'exercise')
            return "운동"
+      },
+      getContentInfo(){
+          axios({
+              method: 'GET',
+              url: "http://localhost:3000/post/"+(this.$store.state.CurrentIdx+1)
+            }).then((e)=>{
+                let dataset = e.data.post[0]
+                console.log(dataset)
+                this.$store.state.boardCardArr[this.$store.state.CurrentIdx].host = dataset.NAME;
+                console.log(this.$store.state.boardCardArr[this.$store.state.CurrentIdx].host)
+                if(this.$store.state.boardCardArr[this.$store.state.CurrentIdx].host == this.$store.state.nickname){
+                    console.log("i'm host")
+                    this.isHost = true;
+                }
+                else{
+                    this.isHost = false;
+                }
+                this.isJoin = false;
+            });
       }
   }
 }

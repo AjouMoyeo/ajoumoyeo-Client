@@ -5,6 +5,7 @@ export default createStore({
     token : "",
     boardCardArr : [],
     nickname : "",
+    sid: "",
     showLogin : false,
     showSignup : false,
     CurrentPage : "Board",

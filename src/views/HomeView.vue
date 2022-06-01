@@ -32,6 +32,7 @@ export default {
     Alarm
   },
   created(){
+    this.$store.state.sid = localStorage.getItem('sid') || ""
     this.$store.state.token = localStorage.getItem('token') || "";
     this.$store.state.nickname = localStorage.getItem('nickname') || ""
   }

@@ -89,7 +89,7 @@ export default {
       sidcheck(){
         axios.get("http://localhost:3000/auth/checkID/"+this.sid).then((e)=>{
             console.log(e)
-            if(e.status = "fail"){
+            if(e.data.status == "fail"){
                 this.$store.state.alarmMessage = "이미 등록된 회원입니다."
             }
             else{
@@ -99,7 +99,8 @@ export default {
         });
       },
       register(){
-          let data = {
+          console.log(this.pw)
+          let dataset = {
               "student_id" : this.sid,
               "name" : this.name,
               "nickname" : this.nickname,
@@ -109,44 +110,57 @@ export default {
               "password" : this.pw
           }
           let correct = true;
-          
+          this.isAjou = true;
           if(this.isAjou == false){
                 this.$store.state.alarmMessage = "학생증사진 혹은 이메일로 아주대학생임을 인증해주십시오."
                 correct = false;
           }
-          else if(this.name){
+          else if(!this.name){
                 this.$store.state.alarmMessage = "이름을 입력해주십시오."
+                correct = false;
           }
-          else if(this.sid){
+          else if(!this.sid){
                 this.$store.state.alarmMessage = "학번을 입력해주십시오."
+                correct = false;
           }
-          else if(this.class){
+          else if(!this.class){
                 this.$store.state.alarmMessage = "학과을 입력해주십시오."
+                correct = false;
           }
-          else if(this.pw){
+          else if(!this.pw){
                 this.$store.state.alarmMessage = "비밀번호을 입력해주십시오."
+                correct = false;
           }
           else if(this.pw != this.Repw){
                 this.$store.state.alarmMessage = "비밀번호을 올바르게 재입력해주십시오."
+                correct = false;
           }
-          else if(this.nickname){
+          else if(!this.nickname){
                 this.$store.state.alarmMessage = "닉네임을 입력해주십시오."
+                correct = false;
           }
-          else if(this.issidcheck == false){
+          else if(!this.issidcheck){
                 this.$store.state.alarmMessage = "학번 중복확인을 해주십시오."
                 correct = false;
           }
-          
+
           if(correct){
-            axios.post("http://localhost:3000/auth/register", data, {"Authrozation" : this.$store.state.token});
-            this.$store.state.showLogin =false;
+          axios({
+              method: 'POST',
+              url: 'http://localhost:3000/auth/register',
+              mode: 'cors',
+              data : dataset
+            }).then((e)=>{
+                this.$store.state.showSignup =false;
+            });
+            
           }
       },
       sendSidCard(){
           this.isSend = true;
           let formdata = new FormData();
           formdata.append("image", this.image)
-          axios.post("http://localhost:7000/card", formdata, {headers:{"Content-Type" : "multipart/form-data"}}).then((e)=>{
+          axios.post("http://127.0.0.1:7000/card", formdata, {headers:{"Content-Type" : "multipart/form-data"}}).then((e)=>{
               console.log(e)
           });
       },

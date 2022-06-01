@@ -32,7 +32,7 @@
       </div>
       <div class="text">
           <div class="title">내용</div>
-          <textarea></textarea>
+          <textarea v-model="this.text"></textarea>
           <div class="button" @click="this.write()">게시글 작성</div>
       </div>
   </div>
@@ -52,13 +52,15 @@ export default {
           anonymous: Boolean,
           preview:require("../assets/logo.png"),
           title:"",
-          image:""
+          image:"",
+          text:"",
+          goal_num: Number
 
           }
   },
   created(){
       this.imgsrc = ""
-
+      this.goal_num = 1
       this.showPhone = false;
       this.anonymous = false;
   },
@@ -73,30 +75,43 @@ export default {
                 reader.readAsDataURL(files[0]);
             }
       },
-      write(){
-          let formdata = new FormData();
-          console.log(this.$store.state.token)
-          let data = {
-              "student_id" : 201820806,
-              "category" : "exercise",
-              "text" : "asdf",
-              "is_anony" : 0,
-              "is_number" : 0,
-              "goal_num" : 10
+      englishCategory(string){
+          if(string = "운동"){
+              return "exercise"
           }
-          let imagefile = document.querySelector('#photo');
-          formdata.append('photo', imagefile.files[0])
-          formdata.append('data', JSON.stringify(data));
-          axios({
-              method: 'POST',
-              url: 'http://localhost:3000/post/multi',
-              mode: 'cors',
-              headers: {
-                "Content-Type" : "multipart/form-data",
-                "authorization" : this.$store.state.token
-                },
-              data : formdata
-            });
+      }
+      ,
+      write(){
+
+          axios.post("http://localhost:7000/filtering", {"title": this.title, "text": this.text}).then((e)=>{
+              console.log(e)
+              if(false){
+                  let formdata = new FormData();
+                  let data = {
+                      "student_id" : this.$store.state.sid,
+                      "category" : this.englishCategory(this.category),
+                      "text" : this.text,
+                      "is_anony" : this.anonymous?1:0,
+                      "is_number" : this.showPhone?1:0,
+                      "goal_num" : this.goal_num,
+                      "title" : this.title
+                  }
+                  let imagefile = document.querySelector('#photo');
+                  formdata.append('photo', imagefile.files[0])
+                  formdata.append('data', JSON.stringify(data));
+                  axios({
+                      method: 'POST',
+                      url: 'http://localhost:3000/post/multi',
+                      mode: 'cors',
+                      headers: {
+                          "Content-Type" : "multipart/form-data",
+                        "authorization" : this.$store.state.token
+                        },
+                      data : formdata
+                    });
+                }
+          })
+          
       }
   }
 }
