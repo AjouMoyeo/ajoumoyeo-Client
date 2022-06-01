@@ -160,7 +160,7 @@ export default {
           this.isSend = true;
           let formdata = new FormData();
           formdata.append("image", this.image)
-          axios.post("http://127.0.0.1:7000/card", formdata, {headers:{"Content-Type" : "multipart/form-data"}}).then((e)=>{
+          axios.post("http://localhost:7000/card", formdata, {headers:{"Content-Type" : "multipart/form-data"}}).then((e)=>{
               console.log(e)
           });
       },
