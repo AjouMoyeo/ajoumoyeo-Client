@@ -6,28 +6,28 @@
       </div>
       <div class="option">
           <div class="image">
-            <img src="../assets/logo.png">
+            <img :src="'http://localhost:3000'+this.$store.state.boardCardArr[this.$store.state.CurrentIdx].url">
           </div>
           <div class="options">
             <div class="box">
                 <div class="name">주최자</div>
-                <div>{{this.$store.state.boardCardArr[this.$store.state.CurrentIdx].anonymous ? "익명" : this.$store.state.boardCardArr[this.$store.state.CurrentIdx].host}}</div>
+                <div>{{this.$store.state.boardCardArr[this.$store.state.CurrentIdx].is_anony ? "익명" : this.$store.state.boardCardArr[this.$store.state.CurrentIdx].host}}</div>
             </div>
             <div class="box">
                 <div class="name">카테고리</div>
-                <div>{{this.$store.state.boardCardArr[this.$store.state.CurrentIdx].category}}</div>
+                <div>{{this.HangulCategory(this.$store.state.boardCardArr[this.$store.state.CurrentIdx].category)}}</div>
             </div>
             <div class="box">
                 <div class="name">번호공개</div>
-                <div>{{this.$store.state.boardCardArr[this.$store.state.CurrentIdx].showPhone ? "공개" : "비공개"}}</div>
+                <div>{{this.$store.state.boardCardArr[this.$store.state.CurrentIdx].is_number ? "공개" : "비공개"}}</div>
             </div>
             <div class="box">
                 <div class="name">익명여부</div>
-                <div>{{this.$store.state.boardCardArr[this.$store.state.CurrentIdx].anonymous ? "익명" : "실명"}}</div>
+                <div>{{this.$store.state.boardCardArr[this.$store.state.CurrentIdx].is_anony ? "익명" : "실명"}}</div>
             </div>
             <div class="button" @click="clickJoin">
-                <div class="big" v-if="!isHost && !isJoin"> 참여하기 ({{this.$store.state.boardCardArr[this.$store.state.CurrentIdx].currentNum}}/{{this.$store.state.boardCardArr[this.$store.state.CurrentIdx].maxNum}})</div>
-                <div class="big" v-if="isHost || isJoin"> 참여완료 ({{this.$store.state.boardCardArr[this.$store.state.CurrentIdx].currentNum}}/{{this.$store.state.boardCardArr[this.$store.state.CurrentIdx].maxNum}})</div>
+                <div class="big" v-if="!isHost && !isJoin"> 참여하기 ({{this.$store.state.boardCardArr[this.$store.state.CurrentIdx].cur_num}}/{{this.$store.state.boardCardArr[this.$store.state.CurrentIdx].goal_num}})</div>
+                <div class="big" v-if="isHost || isJoin"> 참여완료 ({{this.$store.state.boardCardArr[this.$store.state.CurrentIdx].cur_num}}/{{this.$store.state.boardCardArr[this.$store.state.CurrentIdx].goal_num}})</div>
                 <div class="small" v-if="!isHost && isJoin"> 재클릭시 취소됩니다</div>
             </div>
           </div>
@@ -67,7 +67,7 @@ export default {
 
       this.showPhone = false;
       this.anonymous = false;
-      if(this.$store.state.boardCardArr[this.$store.state.CurrentIdx].host == this.$store.state.nickname){
+      if(this.$store.state.boardCardArr[this.$store.state.CurrentIdx].nickname == this.$store.state.nickname){
           console.log("i'm host")
           this.isHost = true;
       }
@@ -79,6 +79,10 @@ export default {
   methods: {
       clickJoin(){
           this.isJoin = !this.isJoin;
+      },
+      HangulCategory(string){
+        if(string == 'exercise')
+           return "운동"
       }
   }
 }
@@ -133,7 +137,7 @@ export default {
         border: 3px solid black;
     }
     .option .image img{
-        margin-top:10px;
+        margin-top:5px;
         width: 270px;
         height: 270px;
     }

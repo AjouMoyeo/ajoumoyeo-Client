@@ -11,14 +11,14 @@
     </div>
     <div class="title">아주모여</div>
     <div class="userInfo">
-        <div v-if="!islogin" class="beforeLogin">
+        <div v-if="!this.$store.state.token" class="beforeLogin">
             <div class="loginButton" @click="clickLogin()">
                 로그인
             </div>
         </div>
-        <div v-if="islogin" class="afterLogin">
-            <div class="nickname">{{ nickname }} 님</div>
-            <div class="logoutButton">
+        <div v-if="this.$store.state.token" class="afterLogin">
+            <div class="nickname">{{ this.$store.state.nickname }} 님</div>
+            <div class="logoutButton" @click="clickLogout()">
                 로그아웃
             </div>
         </div>
@@ -39,18 +39,9 @@ export default {
   },
   data() {
       return {
-            nickname : String,
-            islogin : Boolean,
           }
   },
   created(){
-      this.nickname = this.$store.state.nickname;
-      if(!this.nickname){ //로그인 안함
-          this.islogin = false;
-      }
-      else {  //로그인함
-          this.islogin = true;
-      }
   },
   methods: {
       clickLclose(){
@@ -61,6 +52,11 @@ export default {
       },
       clickLogin(){
         this.$store.state.showLogin = true;
+      },
+      clickLogout(){
+        this.$store.state.token = "";
+        this.$store.state.nickname = "";
+        localStorage.clear()
       }
   }
 }
@@ -84,12 +80,13 @@ export default {
     border: 3px solid black;
     border-radius: 7px;
     margin-left: 50%;
-    height: 1000px;
+    height: 80%;
     width: 800px;
     left: -400px;
-    top: 100px;
+    top: 10%;
     background-color: white;
     z-index: 2;
+    overflow: auto;
 }
 .loginClose{
     position: relative;
@@ -100,10 +97,6 @@ export default {
 .loginClose:hover{
     color:#0066B3;
     cursor: pointer;
-}
-.signup{
-    top: 50px;
-    height: 1150px;
 }
 .signupClose{
     position: relative;

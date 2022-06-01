@@ -1,5 +1,6 @@
 <template>
   <div class="home">
+    <alarm/>
     <topBar/>
     <div v-if="this.$store.state.CurrentPage == 'Board'">
       <Board/>
@@ -15,6 +16,7 @@
 
 <script>
 // @ is an alias to /src
+import Alarm from '@/components/Alarm.vue'
 import TopBar from '@/components/TopBar.vue'
 import Board from '@/components/Board.vue'
 import Write from '@/components/Write.vue'
@@ -26,7 +28,12 @@ export default {
     TopBar,
     Board,
     Write,
-    Content
+    Content,
+    Alarm
+  },
+  created(){
+    this.$store.state.token = localStorage.getItem('token') || "";
+    this.$store.state.nickname = localStorage.getItem('nickname') || ""
   }
 }
 </script>

@@ -1,84 +1,84 @@
 <template>
   <div class="nav">
-      <div class="writeButton" @click="this.$store.state.CurrentPage = 'Write'">
-          게시글작성
-      </div>
       <div class="searchBar">
         <input type="text" v-model="searchWord">
         <div class="searchButton" @click="search()">
               검색
         </div>
       </div>
+      <div v-if ="this.$store.state.token" class="writeButton" @click="this.$store.state.CurrentPage = 'Write'">
+          게시글작성
+      </div>
   </div>
   <div class="board">
       <div class="col">
-        <div class="card left" v-if="this.Card[0][0]"  @click="clickContent(this.Card[0][0].idx)">
-            <img :src="require(`@/assets/${this.Card[0][0].thumbnail}`)"/>
+        <div class="card left" v-if="this.Card[0][0]"  @click="clickContent(this.Card[0][0].post_id)">
+            <img :src="'http://localhost:3000'+this.Card[0][0].url"/>
             <div class="smallBox">
                 <div class="title">
                     {{this.Card[0][0].title}}
                 </div>
                 <div class="">
-                    ({{this.Card[0][0].currentNum}}/{{this.Card[0][0].maxNum}})
+                    ({{this.Card[0][0].cur_num}}/{{this.Card[0][0].goal_num}})
                 </div>
             </div>
         </div>
-        <div class="card right" v-if="this.Card[0][1]"  @click="clickContent(this.Card[0][1].idx)">
-            <img :src="require(`@/assets/${this.Card[0][1].thumbnail}`)"/>
+        <div class="card right" v-if="this.Card[0][1]"  @click="clickContent(this.Card[0][1].post_id)">
+            <img :src="'http://localhost:3000'+this.Card[0][1].url"/>
             <div class="smallBox">
                 <div class="title">
                     {{this.Card[0][1].title}}
                 </div>
                 <div class="">
-                    ({{this.Card[0][1].currentNum}}/{{this.Card[0][1].maxNum}})
+                    ({{this.Card[0][1].cur_num}}/{{this.Card[0][1].goal_num}})
                 </div>
             </div>
         </div>
       </div>
       <div class="col">
-        <div class="card left" v-if="this.Card[1][0]" @click="clickContent(this.Card[1][0].idx)">
-            <img :src="require(`@/assets/${this.Card[1][0].thumbnail}`)"/>
+        <div class="card left" v-if="this.Card[1][0]" @click="clickContent(this.Card[1][0].post_id)">
+            <img :src="'http://localhost:3000'+this.Card[1][0].url"/>
             <div class="smallBox">
                 <div class="title">
                     {{this.Card[1][0].title}}
                 </div>
                 <div class="">
-                    ({{this.Card[1][0].currentNum}}/{{this.Card[1][0].maxNum}})
+                    ({{this.Card[1][0].cur_num}}/{{this.Card[1][0].goal_num}})
                 </div>
             </div>
         </div>
-        <div class="card right" v-if="this.Card[1][1]" @click="clickContent(this.Card[1][1].idx)">
-            <img :src="require(`@/assets/${this.Card[1][1].thumbnail}`)"/>
+        <div class="card right" v-if="this.Card[1][1]" @click="clickContent(this.Card[1][1].post_id)">
+            <img :src="'http://localhost:3000'+this.Card[1][1].url"/>
             <div class="smallBox">
                 <div class="title">
                     {{this.Card[1][1].title}}
                 </div>
                 <div class="">
-                    ({{this.Card[1][1].currentNum}}/{{this.Card[1][1].maxNum}})
+                    ({{this.Card[1][1].cur_num}}/{{this.Card[1][1].goal_num}})
                 </div>
             </div>
         </div>
       </div>
       <div class="col">
-        <div class="card left" v-if="this.Card[2][0]" @click="clickContent(this.Card[2][0].idx)">
-            <img :src="require(`@/assets/${this.Card[2][0].thumbnail}`)"/>
+        <div class="card left" v-if="this.Card[2][0]" @click="clickContent(this.Card[2][0].post_id)">
+            <img :src="'http://localhost:3000'+this.Card[2][0].url"/>
             <div class="smallBox">
                 <div class="title">
                     {{this.Card[2][0].title}}
                 </div>
                 <div class="">
-                    ({{this.Card[2][0].currentNum}}/{{this.Card[2][0].maxNum}})
+                    ({{this.Card[2][0].cur_num}}/{{this.Card[2][0].goal_num}})
                 </div>
             </div>
         </div>
-        <div class="card right" v-if="this.Card[2][1]" @click="clickContent(this.Card[2][1].idx)">
-            <img :src="require(`@/assets/${this.Card[2][1].thumbnail}`)"/>
+        <div class="card right" v-if="this.Card[2][1]" @click="clickContent(this.Card[2][1].post_id)">
+            <img :src="'http://localhost:3000'+this.Card[2][1].url"/>
             <div class="smallBox">
                 <div class="title">
                     {{this.Card[2][1].title}}
                 </div>
                 <div class="">
-                    ({{this.Card[2][1].currentNum}}/{{this.Card[2][1].maxNum}})
+                    ({{this.Card[2][1].cur_num}}/{{this.Card[2][1].goal_num}})
                 </div>
             </div>
         </div>
@@ -114,6 +114,8 @@ export default {
       }
   },
   created(){
+      
+
       this.LoadBoard();
       this.index = 0;
       this.indexArr = [];
@@ -125,7 +127,10 @@ export default {
   methods: {
       LoadBoard(){
           axios.get("http://localhost:3000/post").then((e)=>{
-              console.log(e)
+              this.$store.state.boardCardArr = e.data.data;
+              this.initIdx();
+              console.log("asdf")
+              this.initBoard();
           })
       },
       initBoard(){
@@ -136,6 +141,7 @@ export default {
             for(j = 0; j<2; j++){
                   if(this.boardCardArr[this.index*6+(2*i+j)]){
                       this.Card[i].push(this.boardCardArr[this.index*6+(2*i+j)])
+                      console.log(this.Card[i])
                   }
               }
         }
@@ -197,7 +203,7 @@ export default {
 
       },
       clickContent(num){
-        this.$store.state.CurrentIdx = num;
+        this.$store.state.CurrentIdx = num-1;
         this.$store.state.CurrentPage = 'Content'
       }
   }
@@ -208,11 +214,10 @@ export default {
 <style scoped>
 .nav{
     height: 70px;
-    display: flex;
-    justify-content: space-between;
 }
 .nav .writeButton{
-    margin-top: 50px;
+    position: relative;
+    top: -25px;
     margin-left: 120px;
     height: 25px;
     width: 120px;
@@ -223,6 +228,8 @@ export default {
     cursor: pointer;
 }
 .nav .searchBar{
+    position: relative;
+    left:900px;
     margin-top: 20px;
     margin-right: 130px;
     width: 350px;

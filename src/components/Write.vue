@@ -89,7 +89,7 @@ export default {
           formdata.append('data', JSON.stringify(data));
           axios({
               method: 'POST',
-              url: 'http://localhost:3000/post/add/multi',
+              url: 'http://localhost:3000/post/multi',
               mode: 'cors',
               headers: {
                 "Content-Type" : "multipart/form-data",

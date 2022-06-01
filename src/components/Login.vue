@@ -40,9 +40,15 @@ export default {
               "password" : this.pw
           }
           axios.post("http://localhost:3000/auth/login", data).then( e =>{
-              console.log(e);
+              //this.$store.state.nickname = e.data.nickname
+              //localStorage.setItem('nickname', e.data.nickname);
+              localStorage.setItem('token', e.data.token);
+              localStorage.setItem('nickname', "asd");
+              this.$store.state.nickname = "asd"
               this.$store.state.token = e.data.token
-            this.$store.state.showLogin =false;
+              this.$store.state.showLogin =false;
+          }).catch((err)=>{
+              this.$store.state.alarmMessage = "로그인에 실패하였습니다."
           });
       }
   }
@@ -95,6 +101,7 @@ input{
     background-color: #0066B3;
     border-radius: 5px;
     margin: 0 auto;
+    margin-bottom: 50px;
 }
 .loginButton:hover{
     cursor: pointer;

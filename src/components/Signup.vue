@@ -9,7 +9,7 @@
             </div>
             <div class="content_card" v-if="this.isCard">
                 <input @change="this.upload" accept="image/*" type="file" name="file" id="file" class="inputfile" />
-                <div @click="this.send" class="button">사진전송</div>
+                <div @click="this.sendSidCard" class="button">사진전송</div>
             </div>
             <div class="content_email" v-if="!this.isCard">
             <div class="beforeSend" v-if="!this.isSend">
@@ -30,7 +30,7 @@
             <div class="name">학번</div>
             <div class="sidBox">
                 <input type="text" v-model="this.sid">
-                <div class="button">중복확인</div>
+                <div class="button" @click="this.sidcheck()">중복확인</div>
             </div>
         </div>
         <div class="box class">
@@ -46,14 +46,15 @@
             <input type="password" v-model="this.pw">
         </div>
         <div class="box pwRe">
-            <div class="password">비밀번호 확인</div>
-            <input type="text">
+            <div class="name">비밀번호 확인</div>
+            <input type="password" v-model="this.Repw">
+            <div v-if="this.pw != this.Repw" class="name" :style="{'margin-top' : 12+'px', 'color' : 'red'}">비밀번호가 다릅니다.</div>
         </div>
         <div class="box nickname last">
             <div class="name">닉네임</div>
             <input type="text" v-model="this.nickname">
         </div>
-        <div class="loginButton" @click="login()">회원가입</div>
+        <div class="loginButton" @click="register()">회원가입</div>
   </div>
 </template>
 
@@ -72,7 +73,10 @@ export default {
           class:"",
           phone:"",
           pw:"",
-          nickname:""
+          Repw:"",
+          nickname:"",
+          isAjou: false,
+          issidcheck: false
           }
   },
   created(){
@@ -82,7 +86,19 @@ export default {
           this.$store.state.showLogin = false;
           this.$store.state.showSignup = true;
       },
-      login(){
+      sidcheck(){
+        axios.get("http://localhost:3000/auth/checkID/"+this.sid).then((e)=>{
+            console.log(e)
+            if(e.status = "fail"){
+                this.$store.state.alarmMessage = "이미 등록된 회원입니다."
+            }
+            else{
+                this.$store.state.alarmMessage = "가입이 가능한 회원입니다."
+                this.issidcheck = true;
+            }
+        });
+      },
+      register(){
           let data = {
               "student_id" : this.sid,
               "name" : this.name,
@@ -92,15 +108,47 @@ export default {
               "department" : this.class,
               "password" : this.pw
           }
-          axios.post("http://localhost:3000/auth/register", data, {"Authrozation" : this.$store.state.token});
-          this.$store.state.showLogin =false;
+          let correct = true;
+          
+          if(this.isAjou == false){
+                this.$store.state.alarmMessage = "학생증사진 혹은 이메일로 아주대학생임을 인증해주십시오."
+                correct = false;
+          }
+          else if(this.name){
+                this.$store.state.alarmMessage = "이름을 입력해주십시오."
+          }
+          else if(this.sid){
+                this.$store.state.alarmMessage = "학번을 입력해주십시오."
+          }
+          else if(this.class){
+                this.$store.state.alarmMessage = "학과을 입력해주십시오."
+          }
+          else if(this.pw){
+                this.$store.state.alarmMessage = "비밀번호을 입력해주십시오."
+          }
+          else if(this.pw != this.Repw){
+                this.$store.state.alarmMessage = "비밀번호을 올바르게 재입력해주십시오."
+          }
+          else if(this.nickname){
+                this.$store.state.alarmMessage = "닉네임을 입력해주십시오."
+          }
+          else if(this.issidcheck == false){
+                this.$store.state.alarmMessage = "학번 중복확인을 해주십시오."
+                correct = false;
+          }
+          
+          if(correct){
+            axios.post("http://localhost:3000/auth/register", data, {"Authrozation" : this.$store.state.token});
+            this.$store.state.showLogin =false;
+          }
       },
-      send(){
+      sendSidCard(){
           this.isSend = true;
           let formdata = new FormData();
           formdata.append("image", this.image)
-          axios.post("http://localhost:1234", formdata, {headers:{"Content-Type" : "multipart/form-data",
-                "Authrozation" : this.$store.state.token} });
+          axios.post("http://localhost:7000/card", formdata, {headers:{"Content-Type" : "multipart/form-data"}}).then((e)=>{
+              console.log(e)
+          });
       },
       upload(e){
           let file = e.target.files[0];
@@ -275,8 +323,12 @@ export default {
     background-color: #0066B3;
     border-radius: 5px;
     margin: 0 auto;
+    margin-bottom: 50px;
 }
 .loginButton:hover{
+    cursor: pointer;
+}
+.button{
     cursor: pointer;
 }
 </style>
