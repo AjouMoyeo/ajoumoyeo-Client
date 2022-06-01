@@ -160,9 +160,15 @@ export default {
           this.isSend = true;
           let formdata = new FormData();
           formdata.append("image", this.image)
-          axios.post("http://localhost:7000/card", formdata, {headers:{"Content-Type" : "multipart/form-data"}}).then((e)=>{
-              console.log(e)
-          });
+          axios({
+              method: 'POST',
+              url: 'http://localhost:7000/card',
+              mode: 'cors',
+              data : formdata,
+              headers: {"Content-Type" : "multipart/form-data"} 
+            }).then((e)=>{
+                console.log(e)
+            });
       },
       upload(e){
           let file = e.target.files[0];
