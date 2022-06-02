@@ -1,44 +1,46 @@
 <template>
   <div class="content">
       <div class="titleBar">
-          <div class="title">{{this.$store.state.boardCardArr[this.$store.state.CurrentIdx].title}}</div>
+          <div class="title">{{this.card.title}}</div>
+          <div v-if="isHost" @click="this.modify()" class="modify">수정</div>
+          <div v-if="isHost" @click="this.delete()" class="delete">삭제</div>
           <div class="button" @click="this.$store.state.CurrentPage = 'Board'">X</div>
       </div>
       <div class="option">
           <div class="image">
-            <img :src="'http://localhost:3000'+this.$store.state.boardCardArr[this.$store.state.CurrentIdx].url">
+            <img :src="'http://localhost:3000'+this.card.url">
           </div>
           <div class="options">
             <div class="box">
                 <div class="name">주최자</div>
-                <div>{{this.$store.state.boardCardArr[this.$store.state.CurrentIdx].is_anony ? "익명" : this.$store.state.boardCardArr[this.$store.state.CurrentIdx].host}}</div>
+                <div>{{this.card.is_anony ? "익명" : this.card.host}}</div>
             </div>
             <div class="box">
                 <div class="name">카테고리</div>
-                <div>{{this.HangulCategory(this.$store.state.boardCardArr[this.$store.state.CurrentIdx].category)}}</div>
+                <div>{{this.HangulCategory(this.card.category)}}</div>
             </div>
             <div class="box">
                 <div class="name">번호공개</div>
-                <div>{{this.$store.state.boardCardArr[this.$store.state.CurrentIdx].is_number ? "공개" : "비공개"}}</div>
+                <div>{{this.card.is_number ? "공개" : "비공개"}}</div>
             </div>
             <div class="box">
                 <div class="name">익명여부</div>
-                <div>{{this.$store.state.boardCardArr[this.$store.state.CurrentIdx].is_anony ? "익명" : "실명"}}</div>
+                <div>{{this.card.is_anony ? "익명" : "실명"}}</div>
             </div>
             <div class="button" @click="clickJoin">
-                <div class="big" v-if="!isHost && !isJoin"> 참여하기 ({{this.$store.state.boardCardArr[this.$store.state.CurrentIdx].cur_num}}/{{this.$store.state.boardCardArr[this.$store.state.CurrentIdx].goal_num}})</div>
-                <div class="big" v-if="isHost || isJoin"> 참여완료 ({{this.$store.state.boardCardArr[this.$store.state.CurrentIdx].cur_num}}/{{this.$store.state.boardCardArr[this.$store.state.CurrentIdx].goal_num}})</div>
+                <div class="big" v-if="!isHost && !isJoin"> 참여하기 ({{this.card.cur_num}}/{{this.card.goal_num}})</div>
+                <div class="big" v-if="isHost || isJoin"> 참여완료 ({{this.card.cur_num}}/{{this.card.goal_num}})</div>
                 <div class="small" v-if="!isHost && isJoin"> 재클릭시 취소됩니다</div>
             </div>
           </div>
       </div>
       <div class="text">
           <div class="title">내용</div>
-          <div class="box">{{this.$store.state.boardCardArr[this.$store.state.CurrentIdx].text}}</div>
+          <div class="box">{{this.card.text}}</div>
       </div>
-      <div class="chat">
+      <div class="chat" v-if="isJoin">
           <div class="title">채팅방</div>
-          <div class="box">{{this.$store.state.boardCardArr[this.$store.state.CurrentIdx].text}}</div>
+          <div class="box">{{this.card.text}}</div>
           <div class="message">
               <input type="text">
               <div class="button">전송</div>
@@ -55,6 +57,22 @@ export default {
   name: 'Crite',
   data() {
       return {
+          card: {
+        category: "",
+        cur_num: 0,
+        department: "",
+        email: null,
+        goal_num: 0,
+        is_anony: 0,
+        is_number: 0,
+        name: "",
+        nickname: "",
+        phone_num: "",
+        post_id: 0,
+        student_id: 0,
+        text: "",
+        title: " Only"
+      },
           imgsrc: String,
           category: String,
           showPhone: Boolean,
@@ -66,22 +84,43 @@ export default {
   created(){
       this.imgsrc = ""
       this.getContentInfo()
+      this.card = this.$store.state.boardCardArr.find(e => e.post_id == this.$store.state.CurrentIdx)
 
       this.showPhone = false;
       this.anonymous = false;
   },
   methods: {
+      modify(){
+          this.$store.state.modifyMode = true;
+          this.$store.state.CurrentPage = 'Write'
+
+      },
+      delete(){
+        axios({
+            method: 'DELETE',
+            url: "http://localhost:3000/post/"+(this.$store.state.CurrentIdx),
+            headers: {
+              "authorization" : this.$store.state.token
+              }
+          }).then((e)=>{
+              this.$store.state.alarmMessage = e.data.text;
+              if(e.data.status == "success"){
+                  this.$store.state.CurrentPage = 'Board'
+              }
+          });
+          
+      },
       clickJoin(){
           // 1/1일경우 고려
           if(!this.isJoin){
-              if(this.$store.state.boardCardArr[this.$store.state.CurrentIdx].cur_num >= this.$store.state.boardCardArr[this.$store.state.CurrentIdx].goal_num){
+              if(this.card.cur_num >= this.card.goal_num){
 
                       this.$store.state.alarmMessage = "인원이 가득 찼습니다.";
               }
               else{
                 axios({
                     method: 'GET',
-                    url: "http://localhost:3000/post/join/"+(this.$store.state.CurrentIdx+1),
+                    url: "http://localhost:3000/post/join/"+(this.$store.state.CurrentIdx),
                     headers: {
                       "authorization" : this.$store.state.token
                       }
@@ -89,7 +128,7 @@ export default {
                       this.$store.state.alarmMessage = e.data.text;
                       if(e.data.status == "success"){
                           this.isJoin = !this.isJoin;
-                          this.$store.state.boardCardArr[this.$store.state.CurrentIdx].cur_num++;
+                          this.card.cur_num++;
                       }
                   });
                   
@@ -100,7 +139,7 @@ export default {
               if(this.isJoin && !this.isHost){
             axios({
                 method: 'GET',
-                url: "http://localhost:3000/post/leave/"+(this.$store.state.CurrentIdx+1),
+                url: "http://localhost:3000/post/leave/"+(this.$store.state.CurrentIdx),
                 headers: {
                   "authorization" : this.$store.state.token
                   }
@@ -109,7 +148,7 @@ export default {
                   console.log(e)
                   if(e.data.status == "success"){
                       this.isJoin = !this.isJoin;
-                      this.$store.state.boardCardArr[this.$store.state.CurrentIdx].cur_num--;
+                      this.card.cur_num--;
                   }
               });
 
@@ -123,13 +162,13 @@ export default {
       getContentInfo(){
           axios({
               method: 'GET',
-              url: "http://localhost:3000/post/"+(this.$store.state.CurrentIdx+1)
+              url: "http://localhost:3000/post/"+(this.$store.state.CurrentIdx)
             }).then((e)=>{
                 let dataset = e.data.post[0]
                 console.log(dataset)
-                this.$store.state.boardCardArr[this.$store.state.CurrentIdx].host = dataset.NAME;
-                console.log(this.$store.state.boardCardArr[this.$store.state.CurrentIdx].host)
-                if(this.$store.state.boardCardArr[this.$store.state.CurrentIdx].host == this.$store.state.nickname){
+                this.card.host = dataset.NAME;
+                console.log(this.card.host)
+                if(this.card.host == this.$store.state.nickname){
                     console.log("i'm host")
                     this.isHost = true;
                 }
@@ -170,6 +209,30 @@ export default {
         width: 600px;
         font-size: 30px;
         text-align: left;
+    }
+    .titleBar .modify{
+        position: relative;
+        height: 25px;
+        width: 100px;
+        top: 10px;
+        left: 120px;
+        padding-top: 3px;
+        color:white;
+        border-radius: 5px;
+        background-color: #0066B3;
+        cursor: pointer;
+    }
+    .titleBar .delete{
+        position: relative;
+        height: 25px;
+        width: 100px;
+        top: 10px;
+        left: 20px;
+        padding-top: 3px;
+        color:white;
+        border-radius: 5px;
+        background-color: #0066B3;
+        cursor: pointer;
     }
     .titleBar .button{
         font-size: 25px;

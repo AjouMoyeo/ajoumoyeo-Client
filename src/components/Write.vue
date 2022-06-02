@@ -2,7 +2,7 @@
   <div class="write">
       <div class="title">
           <input type="text" v-model = "this.title" placeholder="제목입력"/>
-          <div class="button" @click="this.$store.state.CurrentPage = 'Board'">X</div>
+          <div class="button" @click="this.$store.state.CurrentPage = 'Board'; this.$store.state.modifyMode = false">X</div>
       </div>
       <div class="option">
           <div class="image">
@@ -33,7 +33,7 @@
       <div class="text">
           <div class="title">내용</div>
           <textarea v-model="this.text"></textarea>
-          <div class="button" @click="this.write()">게시글 작성</div>
+          <div class="button" @click="this.write()">게시글 {{this.$store.state.modifyMode?"수정":"작성"}}</div>
       </div>
   </div>
 </template>
@@ -63,6 +63,16 @@ export default {
       this.goal_num = 1
       this.showPhone = false;
       this.anonymous = false;
+      if(this.$store.state.modifyMode){
+          let card = this.$store.state.boardCardArr.find(e => e.post_id == this.$store.state.CurrentIdx)
+          this.title = card.title;
+          this.preview = "http://localhost:3000"+card.url;
+          this.category = {name:this.HangulCategory(card.category)};
+          this.goal_num = card.goal_num;
+          this.anonymous = card.is_anony;
+          this.showPhone = card.is_number;
+          this.text = card.text;
+      }
   },
   methods: {
       upload(e){
@@ -75,6 +85,10 @@ export default {
                 reader.readAsDataURL(files[0]);
             }
       },
+      HangulCategory(string){
+        if(string == 'exercise')
+           return "운동"
+      },
       englishCategory(string){
           if(string = "운동"){
               return "exercise"
@@ -82,17 +96,15 @@ export default {
       }
       ,
       write(){
+          /*
+          this.$store.state.alarmMessage = "잠시만 기다려 주세요"
           axios({
               method: 'POST',
               url: 'http://localhost:7000/filtering',
               mode: 'cors',
               data : {"title": this.title, "text": this.text}
             }).then((e)=>{
-                console.log(e)
-            });
-
-         
-              if(false){
+                if(e.data == 0){  // 욕 아님
                   let formdata = new FormData();
                   let data = {
                       "student_id" : this.$store.state.sid,
@@ -117,6 +129,70 @@ export default {
                       data : formdata
                     });
                 }
+                else if(e.data == 1){  // 욕
+                    this.$store.state.alarmMessage = "욕설이 감지되었습니다. 다시 작성하여 주십시오"
+                }
+            });
+            */
+           
+                  let formdata = new FormData();
+                  let data = {
+                      "student_id" : this.$store.state.sid,
+                      "category" : this.englishCategory(this.category),
+                      "text" : this.text,
+                      "is_anony" : this.anonymous?1:0,
+                      "is_number" : this.showPhone?1:0,
+                      "goal_num" : this.goal_num,
+                      "title" : this.title
+                  }
+                  let imagefile = document.querySelector('#photo');
+                  formdata.append('photo', imagefile.files[0])
+                  formdata.append('data', JSON.stringify(data));
+                  if(this.$store.state.modifyMode){
+
+                      axios({
+                          method: 'PUT',
+                        url: 'http://localhost:3000/post/multi/'+this.$store.state.CurrentIdx,
+                        mode: 'cors',
+                        headers: {
+                            "Content-Type" : "multipart/form-data",
+                          "authorization" : this.$store.state.token
+                          },
+                        data : formdata
+                      }).then((e)=>{
+                          console.log(e)
+                          if(e.data.status == "success"){
+                              this.$store.state.alarmMessage = "글 수정에 성공하였습니다."
+                              this.$store.state.CurrentPage = "Board"
+
+                          }
+                          else{
+                              this.$store.state.alarmMessage = "글 수정에 실패하였습니다."
+                          }
+                      });
+                  }
+                  else{
+
+                      axios({
+                          method: 'POST',
+                        url: 'http://localhost:3000/post/multi',
+                        mode: 'cors',
+                        headers: {
+                            "Content-Type" : "multipart/form-data",
+                          "authorization" : this.$store.state.token
+                          },
+                        data : formdata
+                      }).then((e)=>{
+                          if(e.data.status == "success"){
+                              this.$store.state.alarmMessage = "글 작성에 성공하였습니다."
+                              this.$store.state.CurrentPage = "Board"
+
+                          }
+                          else{
+                              this.$store.state.alarmMessage = "글 작성에 실패하였습니다."
+                          }
+                      });
+                    }
           
       }
   }

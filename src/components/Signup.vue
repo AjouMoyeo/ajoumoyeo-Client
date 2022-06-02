@@ -110,7 +110,6 @@ export default {
               "password" : this.pw
           }
           let correct = true;
-          this.isAjou = true;
           if(this.isAjou == false){
                 this.$store.state.alarmMessage = "학생증사진 혹은 이메일로 아주대학생임을 인증해주십시오."
                 correct = false;
@@ -168,6 +167,13 @@ export default {
               headers: {"Content-Type" : "multipart/form-data"} 
             }).then((e)=>{
                 console.log(e)
+                let dataset = JSON.stringify(e.data);
+                console.log(dataset)
+                this.name = dataset.name;
+                this.sid = dataset.std_id;
+                this.class = dataset.department;
+
+                this.isAjou = true;
             });
       },
       upload(e){
@@ -177,6 +183,7 @@ export default {
       emailSend(){
           this.email
           axios.post("http://localhost:3000/auth/email", {'email':this.email}).then((e)=>{
+              this.isAjou = true;
               console.log(e)
           })
       }

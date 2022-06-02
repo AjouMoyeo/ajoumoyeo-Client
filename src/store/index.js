@@ -10,7 +10,8 @@ export default createStore({
     showSignup : false,
     CurrentPage : "Board",
     CurrentIdx : 0,
-    alarmMessage : ""
+    alarmMessage : "",
+    modifyMode : false,
   },
   getters: {
   },

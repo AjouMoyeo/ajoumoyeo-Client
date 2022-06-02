@@ -203,7 +203,8 @@ export default {
 
       },
       clickContent(num){
-        this.$store.state.CurrentIdx = num-1;
+          console.log(num)
+        this.$store.state.CurrentIdx = num;
         this.$store.state.CurrentPage = 'Content'
       }
   }

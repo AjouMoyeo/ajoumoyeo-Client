@@ -1,6 +1,6 @@
 <template>
   <div v-if="this.visiable" class="alarm">
-        <div class="title">경고</div>
+        <div class="title">알림</div>
         <div class="content">{{this.$store.state.alarmMessage}}</div>
   </div>
 </template>

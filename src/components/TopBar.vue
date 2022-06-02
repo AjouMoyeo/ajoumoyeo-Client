@@ -57,6 +57,7 @@ export default {
         this.$store.state.token = "";
         this.$store.state.nickname = "";
         localStorage.clear()
+        this.$store.state.CurrentPage = 'Board'
       }
   }
 }
