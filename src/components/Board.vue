@@ -184,7 +184,7 @@ export default {
           else{
               this.SearchCardArr = [];
               this.boardCardArr.forEach(ele=>{
-                  if(ele.title.indexOf(this.searchWord) != -1){
+                  if(ele.title.indexOf(this.searchWord) != -1 || ele.category == this.searchWord){
                       this.SearchCardArr.push(ele);
                   }
               })
