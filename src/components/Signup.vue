@@ -10,6 +10,7 @@
             <div class="content_card" v-if="this.isCard">
                 <input @change="this.upload" accept="image/*" type="file" name="file" id="file" class="inputfile" />
                 <div @click="this.sendSidCard" class="button">사진전송</div>
+                <div>asdf</div>
             </div>
             <div class="content_email" v-if="!this.isCard">
             <div class="beforeSend" v-if="!this.isSend">
@@ -24,18 +25,18 @@
         </div>
         <div class="box name">
             <div class="name">이름</div>
-            <input type="text" v-model="this.name">
+            <input type="text" :disabled="this.afterSend" v-model="this.name">
         </div>
         <div class="box sid">
             <div class="name">학번</div>
             <div class="sidBox">
-                <input type="text" v-model="this.sid">
+                <input type="text" :disabled="this.afterSend" v-model="this.sid">
                 <div class="button" @click="this.sidcheck()">중복확인</div>
             </div>
         </div>
         <div class="box class">
             <div class="name">학과</div>
-            <input type="text" v-model="this.class">
+            <input type="text" :disabled="this.afterSend" v-model="this.class">
         </div>
         <div class="box phone">
             <div class="name">전화번호</div>
@@ -64,6 +65,7 @@ export default {
   name: 'Signup',
   data() {
       return {
+          afterSend: false,
           isCard:true,
           isSend:false,
           image:"",
@@ -173,6 +175,12 @@ export default {
                 this.sid = array[1].split("'")[3];
                 this.class = array[3].split("'")[3];
                 this.isAjou = array[5].split("'")[3] == "yes"?true:false;
+                if(this.isAjou == false){
+                    this.$store.state.alarmMessage = "아주대 학생증이 아닙니다."
+                }
+                else{
+                    this.afterSend = true
+                }
             }).catch((err)=>{
               this.$store.state.alarmMessage = "사진이 없습니다."
           });
