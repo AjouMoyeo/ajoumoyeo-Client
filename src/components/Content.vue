@@ -153,6 +153,9 @@ export default {
               });
 
               }
+              else{
+                  this.$store.state.alarmMessage = "주최자는 참여를 취소할수 없습니다.";
+              }
           }
       },
       HangulCategory(string){
