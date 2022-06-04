@@ -203,9 +203,10 @@ export default {
 
       },
       clickContent(num){
-          console.log(num)
-        this.$store.state.CurrentIdx = num;
-        this.$store.state.CurrentPage = 'Content'
+        if(this.$store.state.nickname){
+            this.$store.state.CurrentIdx = num;
+            this.$store.state.CurrentPage = 'Content'
+        }
       }
   }
 }
