@@ -172,10 +172,14 @@ export default {
                 let array = e.data.split(',')
 
                 this.name = array[0].split('"')[3];
+                console.log(this.name)
                 this.sid = array[1].split('"')[3];
+                console.log(this.sid)
                 this.class = array[3].split('"')[3];
+                console.log(this.class)
 
                 this.isAjou = array[5].split('"')[3] == "yes"?true:false;
+                console.log(this.isAjou)
             });
       },
       upload(e){
