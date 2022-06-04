@@ -10,7 +10,7 @@
             <div class="content_card" v-if="this.isCard">
                 <input @change="this.upload" accept="image/*" type="file" name="file" id="file" class="inputfile" />
                 <div @click="this.sendSidCard" class="button">사진전송</div>
-                <div>asdf</div>
+                <div v-if="this.isAjou" class="isajouinfo">학생증 인식에 성공했습니다.</div>
             </div>
             <div class="content_email" v-if="!this.isCard">
             <div class="beforeSend" v-if="!this.isSend">
@@ -213,6 +213,12 @@ export default {
 }
 .certification .nav{
     margin-left: 100px;
+}
+.certification .isajouinfo{
+    position: relative;
+    width: 300px;
+    top: 45px;
+    left: -350px;
 }
 .certification .button{
     width: 100px;
