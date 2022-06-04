@@ -61,6 +61,7 @@ export default {
   created(){
       this.imgsrc = ""
       this.goal_num = 1
+      this.category = 운동;
       this.showPhone = false;
       this.anonymous = false;
       if(this.$store.state.modifyMode){
