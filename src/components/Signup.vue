@@ -159,6 +159,8 @@ export default {
           this.isSend = true;
           let formdata = new FormData();
           formdata.append("image", this.image)
+          
+          this.$store.state.alarmMessage = "10초정도 소요됩니다.";
           axios({
               method: 'POST',
               url: 'http://localhost:7000/card',
@@ -167,7 +169,7 @@ export default {
               headers: {"Content-Type" : "multipart/form-data"} 
             }).then((e)=>{
                 console.log(e)
-                let dataset = JSON.stringify(e.data);
+                let dataset = JSON.parse(e.data);
                 console.log(dataset)
                 this.name = dataset.name;
                 this.sid = dataset.std_id;
