@@ -168,21 +168,14 @@ export default {
               data : formdata,
               headers: {"Content-Type" : "multipart/form-data"} 
             }).then((e)=>{
-                console.log(e)
                 let array = e.data.split(',')
-
                 this.name = array[0].split("'")[3];
-                console.log(array[0])
-                console.log(array[0].split('"'))
-                console.log(this.name)
                 this.sid = array[1].split("'")[3];
-                console.log(this.sid)
                 this.class = array[3].split("'")[3];
-                console.log(this.class)
-
                 this.isAjou = array[5].split("'")[3] == "yes"?true:false;
-                console.log(this.isAjou)
-            });
+            }).catch((err)=>{
+              this.$store.state.alarmMessage = "사진인식에 실패하였습니다."
+          });
       },
       upload(e){
           let file = e.target.files[0];
