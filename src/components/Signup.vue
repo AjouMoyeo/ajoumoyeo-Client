@@ -171,16 +171,16 @@ export default {
                 console.log(e)
                 let array = e.data.split(',')
 
-                this.name = array[0].split('"')[3];
+                this.name = array[0].split("'")[3];
                 console.log(array[0])
                 console.log(array[0].split('"'))
                 console.log(this.name)
-                this.sid = array[1].split('"')[3];
+                this.sid = array[1].split("'")[3];
                 console.log(this.sid)
-                this.class = array[3].split('"')[3];
+                this.class = array[3].split("'")[3];
                 console.log(this.class)
 
-                this.isAjou = array[5].split('"')[3] == "yes"?true:false;
+                this.isAjou = array[5].split("'")[3] == "yes"?true:false;
                 console.log(this.isAjou)
             });
       },
