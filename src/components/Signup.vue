@@ -172,6 +172,8 @@ export default {
                 let array = e.data.split(',')
 
                 this.name = array[0].split('"')[3];
+                console.log(array[0])
+                console.log(array[0].split('"'))
                 console.log(this.name)
                 this.sid = array[1].split('"')[3];
                 console.log(this.sid)
