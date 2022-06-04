@@ -40,7 +40,7 @@
       </div>
       <div class="chat" v-if="isJoin">
           <div class="title">채팅방</div>
-          <div class="box">{{this.card.text}}</div>
+          <div class="box"></div>
           <div class="message">
               <input type="text">
               <div class="button">전송</div>
