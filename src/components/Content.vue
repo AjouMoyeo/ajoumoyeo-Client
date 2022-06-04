@@ -162,7 +162,11 @@ export default {
       getContentInfo(){
           axios({
               method: 'GET',
-              url: "http://localhost:3000/post/"+(this.$store.state.CurrentIdx)
+              url: "http://localhost:3000/post/"+(this.$store.state.CurrentIdx),
+              headers: {
+                "authorization" : this.$store.state.token
+              }
+
             }).then((e)=>{
                 let dataset = e.data.post[0]
                 console.log(dataset)
