@@ -96,7 +96,6 @@ export default {
       }
       ,
       write(){
-          /*
           this.$store.state.alarmMessage = "잠시만 기다려 주세요"
           axios({
               method: 'POST',
@@ -105,36 +104,7 @@ export default {
               data : {"title": this.title, "text": this.text}
             }).then((e)=>{
                 if(e.data == 0){  // 욕 아님
-                  let formdata = new FormData();
-                  let data = {
-                      "student_id" : this.$store.state.sid,
-                      "category" : this.englishCategory(this.category),
-                      "text" : this.text,
-                      "is_anony" : this.anonymous?1:0,
-                      "is_number" : this.showPhone?1:0,
-                      "goal_num" : this.goal_num,
-                      "title" : this.title
-                  }
-                  let imagefile = document.querySelector('#photo');
-                  formdata.append('photo', imagefile.files[0])
-                  formdata.append('data', JSON.stringify(data));
-                  axios({
-                      method: 'POST',
-                      url: 'http://localhost:3000/post/multi',
-                      mode: 'cors',
-                      headers: {
-                          "Content-Type" : "multipart/form-data",
-                        "authorization" : this.$store.state.token
-                        },
-                      data : formdata
-                    });
-                }
-                else if(e.data == 1){  // 욕
-                    this.$store.state.alarmMessage = "욕설이 감지되었습니다. 다시 작성하여 주십시오"
-                }
-            });
-            */
-           
+                 
                   let formdata = new FormData();
                   let data = {
                       "student_id" : this.$store.state.sid,
@@ -193,6 +163,12 @@ export default {
                           }
                       });
                     }
+                }
+                else if(e.data == 1){  // 욕
+                    this.$store.state.alarmMessage = "욕설이 감지되었습니다. 다시 작성하여 주십시오"
+                }
+            });
+           
           
       }
   }
