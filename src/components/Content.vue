@@ -169,9 +169,7 @@ export default {
 
             }).then((e)=>{
                 let dataset = e.data.post[0]
-                console.log(dataset)
-                this.card.host = dataset.NAME;
-                console.log(this.card.host)
+                this.card.host = dataset.nickname;
                 if(this.card.host == this.$store.state.nickname){
                     console.log("i'm host")
                     this.isHost = true;

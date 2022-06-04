@@ -207,6 +207,10 @@ export default {
             this.$store.state.CurrentIdx = num;
             this.$store.state.CurrentPage = 'Content'
         }
+        else{
+            this.$store.state.alarmMessage = "로그인을 해주십시오."
+
+        }
       }
   }
 }
