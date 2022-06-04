@@ -191,10 +191,15 @@ export default {
       },
       emailSend(){
           this.email
-          axios.post("http://localhost:3000/auth/email", {'email':this.email}).then((e)=>{
-              this.isAjou = true;
+          if(this.email.indexOf("@ajou.ac.kr") != -1){
+              axios.post("http://localhost:3000/auth/email", {'email':this.email}).then((e)=>{
+                  this.isAjou = true;
               console.log(e)
           })
+          }
+          else{
+              this.$store.state.alarmMessage = "아주대 이메일이 아닙니다."
+          }
       }
   }
 }

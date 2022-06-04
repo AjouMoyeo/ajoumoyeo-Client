@@ -175,7 +175,7 @@ export default {
                 else{
                     this.isHost = false;
                 }
-                this.isJoin = false;
+                this.isJoin = e.data.join==1?true:false; // join인지 아닌지 확인
             });
       }
   }
