@@ -171,7 +171,6 @@ export default {
                 console.log(e)
                 let array = e.data.split(',')
 
-                console.log(dataset)
                 this.name = array[0].split('"')[3];
                 this.sid = array[1].split('"')[3];
                 this.class = array[3].split('"')[3];
