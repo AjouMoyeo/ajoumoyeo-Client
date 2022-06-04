@@ -174,7 +174,7 @@ export default {
                 this.class = array[3].split("'")[3];
                 this.isAjou = array[5].split("'")[3] == "yes"?true:false;
             }).catch((err)=>{
-              this.$store.state.alarmMessage = "사진인식에 실패하였습니다."
+              this.$store.state.alarmMessage = "사진이 없습니다."
           });
       },
       upload(e){
