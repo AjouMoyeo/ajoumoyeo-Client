@@ -169,13 +169,14 @@ export default {
               headers: {"Content-Type" : "multipart/form-data"} 
             }).then((e)=>{
                 console.log(e)
-                let dataset = JSON.parse(e.data);
-                console.log(dataset)
-                this.name = dataset.name;
-                this.sid = dataset.std_id;
-                this.class = dataset.department;
+                let array = e.data.split(',')
 
-                this.isAjou = true;
+                console.log(dataset)
+                this.name = array[0].split('"')[3];
+                this.sid = array[1].split('"')[3];
+                this.class = array[3].split('"')[3];
+
+                this.isAjou = array[5].split('"')[3] == "yes"?true:false;
             });
       },
       upload(e){
