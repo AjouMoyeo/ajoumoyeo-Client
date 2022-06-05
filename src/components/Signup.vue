@@ -18,8 +18,9 @@
                 <div @click="this.emailSend" class="button">인증번호받기</div>
             </div>
             <div class="AfterSend" v-if="this.isSend">
-                <input type="text" class="inputfile" placeholder="인증번호 6자리를 입력해주세요." />
-                <div @click="this.send" class="button">인증하기</div>
+                <input type="text" v-model="this.userCerNum" class="inputfile" placeholder="인증번호 6자리를 입력해주세요." />
+                <div @click="this.sendnum6" class="button">인증하기</div>
+                <div v-if="this.isAjou" class="isajouinfo">이메일 인증에 성공했습니다.</div>
             </div>
             </div>
         </div>
@@ -53,7 +54,10 @@
         </div>
         <div class="box nickname last">
             <div class="name">닉네임</div>
-            <input type="text" v-model="this.nickname">
+            <div class="sidBox">
+                <input type="text" v-model="this.nickname">
+                <div class="button" @click="this.nicknamecheck()">중복확인</div>
+            </div>
         </div>
         <div class="loginButton" @click="register()">회원가입</div>
   </div>
@@ -78,7 +82,10 @@ export default {
           Repw:"",
           nickname:"",
           isAjou: false,
-          issidcheck: false
+          issidcheck: false,
+          isnicknamecheck: false,
+          cerNum:"",
+          userCerNum:""
           }
   },
   created(){
@@ -100,6 +107,20 @@ export default {
             }
         });
       },
+      nicknamecheck(){
+
+
+        axios.post("http://localhost:3000/auth/checkNick",{"nickname":this.nickname}).then((e)=>{
+            console.log(e)
+            if(e.data.status == "fail"){
+                this.$store.state.alarmMessage = e.data.text
+            }
+            else{
+                this.$store.state.alarmMessage = e.data.text
+                this.isnicknamecheck = true;
+            }
+        });
+      },
       register(){
           console.log(this.pw)
           let dataset = {
@@ -112,7 +133,9 @@ export default {
               "password" : this.pw
           }
           let correct = true;
-          if(this.isAjou == false){
+          let pattern_spc = /[~!@#$%^&*()_+|<>?:{}]/; // 특수문자
+          let pattern_hanja = /[一-龥]/; // 한자체크
+          if(this.isAjou == true){
                 this.$store.state.alarmMessage = "학생증사진 혹은 이메일로 아주대학생임을 인증해주십시오."
                 correct = false;
           }
@@ -136,15 +159,31 @@ export default {
                 this.$store.state.alarmMessage = "비밀번호을 올바르게 재입력해주십시오."
                 correct = false;
           }
+          else if(pattern_hanja.test(this.pw)){
+                this.$store.state.alarmMessage = "비밀번호에 한자가 사용될 수 없습니다.."
+                correct = false;
+          }
           else if(!this.nickname){
                 this.$store.state.alarmMessage = "닉네임을 입력해주십시오."
+                correct = false;
+          }
+          else if(pattern_spc.test(this.nickname) || pattern_hanja.test(this.nickname)){
+                this.$store.state.alarmMessage = "닉네임에 특수문자, 한자가 사용될 수 없습니다.."
+                correct = false;
+          }
+          else if(this.pw.length >18){
+                this.$store.state.alarmMessage = "18자리 이하의 비밀번호로 구성되어야합니다."
                 correct = false;
           }
           else if(!this.issidcheck){
                 this.$store.state.alarmMessage = "학번 중복확인을 해주십시오."
                 correct = false;
           }
-
+          else if(!this.isnicknamecheck){
+                this.$store.state.alarmMessage = "닉네임 중복확인을 해주십시오."
+                correct = false;
+          }
+          
           if(correct){
           axios({
               method: 'POST',
@@ -190,15 +229,33 @@ export default {
           this.image = file;
       },
       emailSend(){
-          this.email
           if(this.email.indexOf("@ajou.ac.kr") != -1){
               axios.post("http://localhost:3000/auth/email", {'email':this.email}).then((e)=>{
-                  this.isAjou = true;
-              console.log(e)
+                console.log(e)
+                  if(e.data.state == "success"){
+                      this.cerNum = e.data.number
+                      this.isSend = true;
+                  }
+                  else{
+                    this.$store.state.alarmMessage = "이메일 전송에 실패하였습니다."
+
+                  }
+
+          }).catch((err)=>{
+            this.$store.state.alarmMessage = "이메일 전송에 실패하였습니다."
           })
           }
           else{
               this.$store.state.alarmMessage = "아주대 이메일이 아닙니다."
+          }
+      },
+      sendnum6(){
+          if(this.userCerNum == this.cerNum){
+                this.isAjou = true;
+              this.$store.state.alarmMessage = "이메일 인증에 성공했습니다."
+          }
+          else{
+              this.$store.state.alarmMessage = "인증번호가 다릅니다."
           }
       }
   }
@@ -335,6 +392,18 @@ export default {
     width: 450px;
 }
 .box.sid .sidBox div{
+    margin-top: 12px;
+    padding-top : 15px;
+    height: 40px;
+    width:120px;
+    border-radius: 7px;
+    color: white;
+    background-color: #0066B3;
+}
+.box.nickname input{
+    width: 450px;
+}
+.box.nickname .sidBox div{
     margin-top: 12px;
     padding-top : 15px;
     height: 40px;
