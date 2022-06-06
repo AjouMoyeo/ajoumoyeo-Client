@@ -206,6 +206,7 @@ export default {
               mode: 'cors',
               data : dataset
             }).then((e)=>{
+                this.$store.state.alarmMessage = "회원가입에 성공했습니다."
                 this.$store.state.showSignup =false;
             });
             
