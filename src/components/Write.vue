@@ -164,6 +164,7 @@ export default {
                     let imagefile = document.querySelector('#photo');
                     formdata.append('photo', imagefile.files[0])
                     formdata.append('data', JSON.stringify(data));
+                    console.log(data)
                     if(this.$store.state.modifyMode){
 
                         axios({
