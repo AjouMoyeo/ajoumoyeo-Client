@@ -14,6 +14,8 @@
                 <div class="name">카테고리</div>
                 <select class="select" v-model="category">
                     <option :value="{name:'운동'}">운동</option>
+                    <option :value="{name:'음식'}">음식</option>
+                    <option :value="{name:'게임'}">게임</option>
                 </select>
             </div>
             <div class="box">
@@ -89,10 +91,21 @@ export default {
       HangulCategory(string){
         if(string == 'exercise')
            return "운동"
+        if(string == 'game')
+           return "게임"
+        if(string == 'food')
+           return "음식"
+        
       },
       englishCategory(string){
           if(string = "운동"){
               return "exercise"
+          }
+          if(string = "게임"){
+              return "game"
+          }
+          if(string = "음식"){
+              return "food"
           }
       },
       clickshowPhone(){

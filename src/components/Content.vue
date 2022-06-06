@@ -161,6 +161,11 @@ export default {
       HangulCategory(string){
         if(string == 'exercise')
            return "운동"
+        if(string == 'game')
+           return "게임"
+        if(string == 'food')
+           return "음식"
+        
       },
       getContentInfo(){
           axios({

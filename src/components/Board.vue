@@ -184,7 +184,7 @@ export default {
           else{
               this.SearchCardArr = [];
               this.boardCardArr.forEach(ele=>{
-                  if(ele.title.indexOf(this.searchWord) != -1 || ele.category == this.searchWord){
+                  if(ele.title.indexOf(this.searchWord) != -1 || HangulCategory(ele.category) == this.searchWord){
                       this.SearchCardArr.push(ele);
                   }
               })
@@ -201,6 +201,15 @@ export default {
         
           this.searchWord = "";
 
+      },
+      HangulCategory(string){
+        if(string == 'exercise')
+           return "운동"
+        if(string == 'game')
+           return "게임"
+        if(string == 'food')
+           return "음식"
+        
       },
       clickContent(num){
         if(this.$store.state.nickname){
