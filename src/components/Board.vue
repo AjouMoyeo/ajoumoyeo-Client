@@ -127,7 +127,7 @@ export default {
   methods: {
       LoadBoard(){
           axios.get("http://localhost:3000/post").then((e)=>{
-              this.$store.state.boardCardArr = e.data.data;
+              this.$store.state.boardCardArr = e.data.data.reverse();
               this.initIdx();
               console.log("asdf")
               this.initBoard();
