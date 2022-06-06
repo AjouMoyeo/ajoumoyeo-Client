@@ -232,7 +232,7 @@ export default {
           if(this.email.indexOf("@ajou.ac.kr") != -1){
               axios.post("http://localhost:3000/auth/email", {'email':this.email}).then((e)=>{
                 console.log(e)
-                  if(e.data.state == "success"){
+                  if(e.data.status == "success"){
                       this.cerNum = e.data.number
                       this.isSend = true;
                   }
