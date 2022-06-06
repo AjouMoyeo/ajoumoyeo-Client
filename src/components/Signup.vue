@@ -176,7 +176,7 @@ export default {
                 this.class = array[3].split("'")[3];
                 this.isAjou = array[5].split("'")[3] == "yes"?true:false;
                 if(this.isAjou == false){
-                    this.$store.state.alarmMessage = "아주대 학생증이 아닙니다."
+                    this.$store.state.alarmMessage = "사진정보가 올바르지 않습니다. 다시 찍어서 전송하여주십시오."
                 }
                 else{
                     this.afterSend = true
