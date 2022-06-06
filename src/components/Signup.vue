@@ -31,7 +31,7 @@
         <div class="box sid">
             <div class="name">학번</div>
             <div class="sidBox">
-                <input type="text" :disabled="this.afterSend" v-model="this.sid">
+                <input type="text" :disabled="this.afterSend || this.issidcheck" v-model="this.sid">
                 <div class="button" @click="this.sidcheck()">중복확인</div>
             </div>
         </div>
@@ -55,7 +55,7 @@
         <div class="box nickname last">
             <div class="name">닉네임</div>
             <div class="sidBox">
-                <input type="text" v-model="this.nickname">
+                <input type="text" :disabled="this.isnicknamecheck" v-model="this.nickname">
                 <div class="button" @click="this.nicknamecheck()">중복확인</div>
             </div>
         </div>
