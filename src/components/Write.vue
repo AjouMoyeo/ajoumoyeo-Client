@@ -22,11 +22,11 @@
             </div>
             <div class="box">
                 <div class="name">번호공개</div>
-                <div class="check" :class="{ 'select': this.showPhone}" @click="this.showPhone = !this.showPhone"></div>
+                <div class="check" :class="{ 'select': this.showPhone}" @click="this.clickshowPhone"></div>
             </div>
             <div class="box">
                 <div class="name">익명여부</div>
-                <div class="check" :class="{ 'select': this.anonymous}" @click="this.anonymous = !this.anonymous"></div>
+                <div class="check" :class="{ 'select': this.anonymous}" @click="this.clickanonymous"></div>
             </div>
           </div>
       </div>
@@ -61,7 +61,7 @@ export default {
   created(){
       this.imgsrc = ""
       this.goal_num = 1
-      this.category = "운동";
+      this.category = {'name':"운동"};
       this.showPhone = false;
       this.anonymous = false;
       if(this.$store.state.modifyMode){
@@ -94,82 +94,115 @@ export default {
           if(string = "운동"){
               return "exercise"
           }
+      },
+      clickshowPhone(){
+          if(!this.$store.state.modifyMode){
+              this.showPhone = !this.showPhone
+          }
+      },
+      clickanonymous(){
+          if(!this.$store.state.modifyMode){
+            this.anonymous = !this.anonymous
+          }
       }
       ,
       write(){
-          this.$store.state.alarmMessage = "잠시만 기다려 주세요"
-          axios({
-              method: 'POST',
-              url: 'http://localhost:7000/filtering',
-              mode: 'cors',
-              data : {"title": this.title, "text": this.text}
-            }).then((e)=>{
-                if(e.data == 0){  // 욕 아님
-                 
-                  let formdata = new FormData();
-                  let data = {
-                      "student_id" : this.$store.state.sid,
-                      "category" : this.englishCategory(this.category),
-                      "text" : this.text,
-                      "is_anony" : this.anonymous?1:0,
-                      "is_number" : this.showPhone?1:0,
-                      "goal_num" : this.goal_num,
-                      "title" : this.title
-                  }
-                  let imagefile = document.querySelector('#photo');
-                  formdata.append('photo', imagefile.files[0])
-                  formdata.append('data', JSON.stringify(data));
-                  if(this.$store.state.modifyMode){
+          let correct = true;
+          let pattern_num = /[0-9]/;	// 숫자 
 
-                      axios({
-                          method: 'PUT',
-                        url: 'http://localhost:3000/post/multi/'+this.$store.state.CurrentIdx,
-                        mode: 'cors',
-                        headers: {
-                            "Content-Type" : "multipart/form-data",
-                          "authorization" : this.$store.state.token
-                          },
-                        data : formdata
-                      }).then((e)=>{
-                          console.log(e)
-                          if(e.data.status == "success"){
-                              this.$store.state.alarmMessage = "글 수정에 성공하였습니다."
-                              this.$store.state.CurrentPage = "Board"
+          if(parseInt(this.goal_num) <1){
+            this.$store.state.alarmMessage = "목표 인원수가 1보다 작습니다."
+            correct = false
+          }
+          else if(!pattern_num.test(this.goal_num)){
+            this.$store.state.alarmMessage = "목표 인원수가 숫자가 아닙니다."
+            correct = false
+          }
+          else if(!this.title){
+            this.$store.state.alarmMessage = "게시글 제목을 입력해주십시오."
+            correct = false
+          }
+          else if(!this.text){
+            this.$store.state.alarmMessage = "게시글 내용을 입력해주십시오."
+            correct = false
+          }
 
-                          }
-                          else{
-                              this.$store.state.alarmMessage = "글 수정에 실패하였습니다."
-                          }
-                      });
-                  }
-                  else{
 
-                      axios({
-                          method: 'POST',
-                        url: 'http://localhost:3000/post/multi',
-                        mode: 'cors',
-                        headers: {
-                            "Content-Type" : "multipart/form-data",
-                          "authorization" : this.$store.state.token
-                          },
-                        data : formdata
-                      }).then((e)=>{
-                          if(e.data.status == "success"){
-                              this.$store.state.alarmMessage = "글 작성에 성공하였습니다."
-                              this.$store.state.CurrentPage = "Board"
+          if(correct){
+            this.$store.state.alarmMessage = "잠시만 기다려 주세요"
+            axios({
+                method: 'POST',
+                url: 'http://localhost:7000/filtering',
+                mode: 'cors',
+                data : {"title": this.title, "text": this.text}
+              }).then((e)=>{
+                  if(e.data == 0){  // 욕 아님
 
-                          }
-                          else{
-                              this.$store.state.alarmMessage = "글 작성에 실패하였습니다."
-                          }
-                      });
+                    let formdata = new FormData();
+                    let data = {
+                        "student_id" : this.$store.state.sid,
+                        "category" : this.englishCategory(this.category),
+                        "text" : this.text,
+                        "is_anony" : this.anonymous?1:0,
+                        "is_number" : this.showPhone?1:0,
+                        "goal_num" : this.goal_num,
+                        "title" : this.title
                     }
-                }
-                else if(e.data == 1){  // 욕
-                    this.$store.state.alarmMessage = "욕설이 감지되었습니다. 다시 작성하여 주십시오"
-                }
-            });
-           
+                    let imagefile = document.querySelector('#photo');
+                    formdata.append('photo', imagefile.files[0])
+                    formdata.append('data', JSON.stringify(data));
+                    if(this.$store.state.modifyMode){
+
+                        axios({
+                            method: 'PUT',
+                          url: 'http://localhost:3000/post/multi/'+this.$store.state.CurrentIdx,
+                          mode: 'cors',
+                          headers: {
+                              "Content-Type" : "multipart/form-data",
+                            "authorization" : this.$store.state.token
+                            },
+                          data : formdata
+                        }).then((e)=>{
+                            console.log(e)
+                            if(e.data.status == "success"){
+                                this.$store.state.alarmMessage = "글 수정에 성공하였습니다."
+                                this.$store.state.CurrentPage = "Board"
+                                this.$store.state.modifyMode = false
+
+                            }
+                            else{
+                                this.$store.state.alarmMessage = "글 수정에 실패하였습니다."
+                            }
+                        });
+                    }
+                    else{
+
+                        axios({
+                            method: 'POST',
+                          url: 'http://localhost:3000/post/multi',
+                          mode: 'cors',
+                          headers: {
+                              "Content-Type" : "multipart/form-data",
+                            "authorization" : this.$store.state.token
+                            },
+                          data : formdata
+                        }).then((e)=>{
+                            if(e.data.status == "success"){
+                                this.$store.state.alarmMessage = "글 작성에 성공하였습니다."
+                                this.$store.state.CurrentPage = "Board"
+
+                            }
+                            else{
+                                this.$store.state.alarmMessage = "글 작성에 실패하였습니다."
+                            }
+                        });
+                      }
+                  }
+                  else if(e.data == 1){  // 욕
+                      this.$store.state.alarmMessage = "욕설이 감지되었습니다. 다시 작성하여 주십시오"
+                  }
+              });
+          } 
           
       }
   }
