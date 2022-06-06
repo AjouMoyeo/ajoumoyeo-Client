@@ -114,18 +114,27 @@ export default {
         }
       },
       nicknamecheck(){
+        let correct = true;
+        let pattern_spc = /[~!@#$%^&*()_+|<>?:{}]/; // 특수문자
+        let pattern_hanja = /[一-龥]/; // 한자체크
 
+        if(pattern_spc.test(this.nickname) || pattern_hanja.test(this.nickname)){
+              this.$store.state.alarmMessage = "닉네임에 특수문자, 한자가 사용될 수 없습니다.."
+              correct = false;
+        }
 
-        axios.post("http://localhost:3000/auth/checkNick",{"nickname":this.nickname}).then((e)=>{
-            console.log(e)
-            if(e.data.status == "fail"){
-                this.$store.state.alarmMessage = e.data.text
-            }
-            else{
-                this.$store.state.alarmMessage = e.data.text
-                this.isnicknamecheck = true;
-            }
-        });
+        if(correct){
+            axios.post("http://localhost:3000/auth/checkNick",{"nickname":this.nickname}).then((e)=>{
+                    console.log(e)
+                if(e.data.status == "fail"){
+                    this.$store.state.alarmMessage = e.data.text
+                }
+                else{
+                    this.$store.state.alarmMessage = e.data.text
+                    this.isnicknamecheck = true;
+                }
+            });
+        }
       },
       register(){
           console.log(this.pw)
