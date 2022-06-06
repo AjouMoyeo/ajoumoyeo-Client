@@ -233,6 +233,7 @@ export default {
               axios.post("http://localhost:3000/auth/email", {'email':this.email}).then((e)=>{
                 console.log(e)
                   if(e.data.status == "success"){
+                      this.$store.state.alarmMessage = "이메일 전송에 성공하였습니다. 인증번호를 입력해주세요."
                       this.cerNum = e.data.number
                       this.isSend = true;
                   }
@@ -250,8 +251,11 @@ export default {
           }
       },
       sendnum6(){
+          console.log(this.userCerNum);
+          console.log(this.cerNum)
+          console.log(this.userCerNum == this.cerNum)
           if(this.userCerNum == this.cerNum){
-                this.isAjou = true;
+              this.isAjou = true;
               this.$store.state.alarmMessage = "이메일 인증에 성공했습니다."
           }
           else{
