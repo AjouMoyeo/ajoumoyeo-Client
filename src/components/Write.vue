@@ -98,13 +98,13 @@ export default {
         
       },
       englishCategory(string){
-          if(string = "운동"){
+          if(string == "운동"){
               return "exercise"
           }
-          if(string = "게임"){
+          if(string == "게임"){
               return "game"
           }
-          if(string = "음식"){
+          if(string == "음식"){
               return "food"
           }
       },
