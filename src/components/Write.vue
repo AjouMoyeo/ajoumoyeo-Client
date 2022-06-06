@@ -12,7 +12,7 @@
           <div class="options">
             <div class="box">
                 <div class="name">카테고리</div>
-                <select class="select" v-model="category">
+                <select class="select" v-model="this.category">
                     <option :value="{name:'운동'}">운동</option>
                     <option :value="{name:'음식'}">음식</option>
                     <option :value="{name:'게임'}">게임</option>
@@ -20,7 +20,7 @@
             </div>
             <div class="box">
                 <div class="name">목표인원수</div>
-                <input class="num" type="text" v-model="goal_num"/>
+                <input class="num" type="text" v-model="this.goal_num"/>
             </div>
             <div class="box">
                 <div class="name">번호공개</div>
