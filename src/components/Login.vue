@@ -40,6 +40,7 @@ export default {
               "password" : this.pw
           }
           axios.post("http://localhost:3000/auth/login", data).then( e =>{
+              console.log(e)
               this.$store.state.nickname = e.data.nickname
               localStorage.setItem('nickname', e.data.nickname);
               localStorage.setItem('token', e.data.token);
