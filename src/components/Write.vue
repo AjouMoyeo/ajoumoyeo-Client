@@ -150,6 +150,8 @@ export default {
                 data : {"title": this.title, "text": this.text}
               }).then((e)=>{
                   if(e.data == 0){  // 욕 아님
+                    console.log(this.category)
+                    console.log(this.englishCategory(this.category))
 
                     let formdata = new FormData();
                     let data = {
