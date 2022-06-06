@@ -19,7 +19,7 @@
             </div>
             <div class="AfterSend" v-if="this.isSend">
                 <input type="text" v-model="this.userCerNum" class="inputfile" placeholder="인증번호 6자리를 입력해주세요." />
-                <div @click="this.sendnum6" class="button">인증하기</div>
+                <div @click="this.sendnum6" :disabled="this.isAjou" class="button">인증하기</div>
                 <div v-if="this.isAjou" class="isajouinfo">이메일 인증에 성공했습니다.</div>
             </div>
             </div>
@@ -96,16 +96,22 @@ export default {
           this.$store.state.showSignup = true;
       },
       sidcheck(){
-        axios.get("http://localhost:3000/auth/checkID/"+this.sid).then((e)=>{
-            console.log(e)
-            if(e.data.status == "fail"){
-                this.$store.state.alarmMessage = "이미 등록된 회원입니다."
-            }
-            else{
-                this.$store.state.alarmMessage = "가입이 가능한 회원입니다."
-                this.issidcheck = true;
-            }
-        });
+          if(this.sid.length == 9){
+
+            axios.get("http://localhost:3000/auth/checkID/"+this.sid).then((e)=>{
+                      console.log(e)
+                if(e.data.status == "fail"){
+                    this.$store.state.alarmMessage = "이미 등록된 회원입니다."
+                }
+                else{
+                    this.$store.state.alarmMessage = "가입이 가능한 회원입니다."
+                    this.issidcheck = true;
+                }
+            });
+        }
+        else{
+                this.$store.state.alarmMessage = "올바른 학번을 입력해주세요."
+        }
       },
       nicknamecheck(){
 
