@@ -40,13 +40,17 @@ export default {
               "password" : this.pw
           }
           axios.post("http://localhost:3000/auth/login", data).then( e =>{
-              console.log(e)
-              this.$store.state.nickname = e.data.nickname
-              localStorage.setItem('nickname', e.data.nickname);
-              localStorage.setItem('token', e.data.token);
-              localStorage.setItem('sid', this.sid);
-              this.$store.state.token = e.data.token
-              this.$store.state.showLogin =false;
+              if(e.data.status == 'success'){
+                this.$store.state.nickname = e.data.nickname
+                localStorage.setItem('nickname', e.data.nickname);
+                localStorage.setItem('token', e.data.token);
+                localStorage.setItem('sid', this.sid);
+                this.$store.state.token = e.data.token
+                this.$store.state.showLogin =false;
+              }
+              else{
+                  this.$store.state.alarmMessage = "로그인에 실패하였습니다."
+              }
           }).catch((err)=>{
               this.$store.state.alarmMessage = "로그인에 실패하였습니다."
           });
