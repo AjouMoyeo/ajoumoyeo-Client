@@ -135,7 +135,7 @@ export default {
           let correct = true;
           let pattern_spc = /[~!@#$%^&*()_+|<>?:{}]/; // 특수문자
           let pattern_hanja = /[一-龥]/; // 한자체크
-          if(this.isAjou == true){
+          if(this.isAjou == false){
                 this.$store.state.alarmMessage = "학생증사진 혹은 이메일로 아주대학생임을 인증해주십시오."
                 correct = false;
           }
