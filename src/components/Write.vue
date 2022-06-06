@@ -152,12 +152,13 @@ export default {
                   if(e.data == 0){  // 욕 아님
                   console.log('-------------------------')
                     console.log(this.category)
+                    console.log(this.category.name)
                     console.log(this.englishCategory(this.category))
 
                     let formdata = new FormData();
                     let data = {
                         "student_id" : this.$store.state.sid,
-                        "category" : this.englishCategory(this.category),
+                        "category" : this.englishCategory(this.category.name),
                         "text" : this.text,
                         "is_anony" : this.anonymous?1:0,
                         "is_number" : this.showPhone?1:0,
