@@ -153,7 +153,7 @@ export default {
                   console.log('-------------------------')
                     console.log(this.category)
                     console.log(this.category.name)
-                    console.log(this.englishCategory(this.category))
+                    console.log(this.englishCategory(this.category.name))
 
                     let formdata = new FormData();
                     let data = {
