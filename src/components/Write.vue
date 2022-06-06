@@ -123,8 +123,8 @@ export default {
           let correct = true;
           let pattern_num = /[0-9]/;	// 숫자 
 
-          if(parseInt(this.goal_num) <1){
-            this.$store.state.alarmMessage = "목표 인원수가 1보다 작습니다."
+          if(parseInt(this.goal_num) <2){
+            this.$store.state.alarmMessage = "목표 인원수가 2보다 작습니다."
             correct = false
           }
           else if(!pattern_num.test(this.goal_num)){
