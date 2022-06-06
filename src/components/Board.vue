@@ -184,7 +184,7 @@ export default {
           else{
               this.SearchCardArr = [];
               this.boardCardArr.forEach(ele=>{
-                  if(ele.title.indexOf(this.searchWord) != -1 || HangulCategory(ele.category) == this.searchWord){
+                  if(ele.title.indexOf(this.searchWord) != -1 || this.HangulCategory(ele.category) == this.searchWord){
                       this.SearchCardArr.push(ele);
                   }
               })
